@@ -2432,7 +2432,7 @@ static void parse_while(LexState *ls, BCLine line)
   start = fs->lasttarget = fs->pc;
   condexit = expr_cond(ls);
   fscope_begin(fs, &bl, FSCOPE_LOOP);
-  lex_check(ls, TK_do);
+  lex_opt(ls, TK_do);
   loop = bcemit_AD(fs, BC_LOOP, fs->nactvar, 0);
   parse_block(ls);
   jmp_patch(fs, bcemit_jmp(fs), start);
@@ -2493,7 +2493,7 @@ static void parse_for_num(LexState *ls, GCstr *varname, BCLine line)
     bcreg_reserve(fs, 1);
   }
   var_add(ls, 3);  /* Hidden control variables. */
-  lex_check(ls, TK_do);
+  lex_opt(ls, TK_do);
   loop = bcemit_AJ(fs, BC_FORI, base, NO_JMP);
   fscope_begin(fs, &bl, 0);  /* Scope for visible variables. */
   var_add(ls, 1);
@@ -2565,7 +2565,7 @@ static void parse_for_iter(LexState *ls, GCstr *indexname)
   bcreg_bump(fs, 3+LJ_FR2);
   isnext = (nvars <= 5 && predict_next(ls, fs, exprpc));
   var_add(ls, 3);  /* Hidden control variables. */
-  lex_check(ls, TK_do);
+  lex_opt(ls, TK_do);
   loop = bcemit_AJ(fs, isnext ? BC_ISNEXT : BC_JMP, base, NO_JMP);
   fscope_begin(fs, &bl, 0);  /* Scope for visible variables. */
   var_add(ls, nvars-3);
@@ -2606,7 +2606,7 @@ static BCPos parse_then(LexState *ls)
   BCPos condexit;
   lj_lex_next(ls);  /* Skip 'if' or 'elseif'. */
   condexit = expr_cond(ls);
-  lex_check(ls, TK_then);
+  lex_opt(ls, TK_then);
   parse_block(ls);
   return condexit;
 }
